@@ -1,0 +1,123 @@
+syntax = "proto3";
+
+
+package grpcapi;
+
+
+option go_package = "./";
+
+
+service Agent {
+    rpc FetchCommand (Empty) returns (Command);
+    rpc SendOutput (Command) returns (Empty);
+    rpc GetSystemInfo (Empty) returns (SystemInfo);
+    rpc UploadFile (FileChunk) returns (Empty);
+    rpc DownloadFile (FileRequest) returns (stream FileChunk);
+    rpc ListProccesses (Empty) returns (ProcessList);
+    rpc KillProcess (Process) returns (CommandResult);
+    rpc ExecuteCommand (Command) returns (CommandResult);
+    rpc SetupPersistance (PersistanceRequest) returns (CommandResult);
+    rpc NetworkScan (NetworkScanRequest) returns (NetworkScanResult);
+    rpc EnumerateUsers (Empty) returns (UserList);
+}
+
+service Admin {
+    rpc RunCommand (Command) returns (CommandResult);
+    rpc GetLogs (LogRequest) returns (stream LogEntry);
+    rpc PushCommand (Command) returns (Empty);
+}
+
+message Command {
+    string In = 1;
+    string Out = 2;
+}
+
+
+message FileChunk {
+    bytes Data = 1;
+    string FileName = 2; 
+    int64 ChunkNumber =3;
+    int64 TotalChunks = 4;
+}
+
+message FileRequest {
+    string FileName = 1;
+}
+
+message SystemInfo {
+    string Hostname = 1;
+    string OS = 2;
+    string Arch = 3; 
+    string Uptime = 4;
+    map<string, string>EnvironmentVariables = 5;
+}
+
+message ProcessList {
+    repeated Process processes = 1;
+}
+
+
+message Process {
+    int32 PID = 1;
+    string Name = 2;
+    string User = 3;
+}
+
+message ProcessRequest {
+    int32 PID = 1;
+}
+
+message CommandResult {
+    bool Success = 1;
+    string Message = 2;
+}
+
+message PersistanceRequest {
+    string Method = 1;
+    string Payload = 2;
+}
+
+message NetworkScanRequest {
+    string TargetRange = 1;
+}
+
+
+message NetworkScanResult {
+    repeated Host hosts = 1;
+}
+
+message Host {
+    string IP = 1;
+    repeated OpenPort open_ports = 2;
+}
+
+message OpenPort {
+    int32 Port = 1;
+    string Service = 2;
+}
+
+message UserList {
+    repeated User users = 1;
+}
+
+message User {
+    string Username = 1;
+    string Group = 2;
+}
+
+message LogRequest {
+    string Filter = 1; 
+}
+
+message LogEntry {
+    string Timestamp = 1; 
+    string Level = 2;
+    string Message = 3;
+}
+
+message Empty {}
+
+
+    
+
+
